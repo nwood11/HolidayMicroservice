@@ -21,4 +21,4 @@ In the .py file, make sure to import the request function from your program (I h
 Returned as an array
 An example of how to receive the data:
   - response = socket.recv()
-    final_response = json.loads(response.decode("utf-8"))
+  - final_response = json.loads(response.decode("utf-8"))
