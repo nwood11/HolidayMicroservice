@@ -1,6 +1,7 @@
 import zmq
 import json
 import configparser
+# this next line replace with the request from your program
 from client import send_request
 
 # checks if there is a date in the request
