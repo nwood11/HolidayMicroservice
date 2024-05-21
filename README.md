@@ -13,8 +13,8 @@ Microservice that returns the holiday on a given day or month. Uses ZeroMQ, and 
   - The request should be the month followed by the date (if needed). It is not case sensitive, and a space is not needed
   - However, the month should be written out, with the date as a number
   - Call format: socket.send(json.dumps(string).encode("utf-8"))
-  - Example Call: socket.send_string("December 25") (for a date) or
-  - socket.send_string("December") (for just the month)
+  - Example Call: socket.send(json.dumps("December 25").encode("utf-8"))  (for a date) or
+  - socket.send(json.dumps("December").encode("utf-8")) (for just the month)
   - You don't need to specify date or month. The program will use a date if a number is included in the request, and a month if not.
 
 # Receiving Data
