@@ -22,3 +22,4 @@ Returned as an array
 - An example of how to receive the data:
   - response = socket.recv()
   - final_response = json.loads(response.decode("utf-8"))
+![image](https://github.com/nwood11/HolidayMicroservice/assets/167386270/eda6176d-83b1-424d-8ce1-786bf7757446)
