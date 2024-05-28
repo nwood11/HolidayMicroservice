@@ -1,105 +1,51 @@
 import zmq
 import json
 import configparser
-# this next line replace with the request from your program
-from client import send_request
 
-# checks if there is a date in the request
-def check_if_date(req):
-    temp = False
-    for char in req:
-        if char.isdigit():
-            temp = True
-    return temp
-
-# returns the date portion of the request
-def check_date(req):
-    date = ""
-    for char in req:
-        if char.isdigit():
-            date = date + char
-    return date
-
-# returns the month portion of the request
-def check_month(req):
-    month = ""
-    for char in req:
-        if char.isalpha():
-            month = month + char.lower()
-    return month
-
-# checks if the string is a month
-def valid_month(m):
-    valid = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-    if m in valid:
-        return True
+# checks if it is in mm-dd-yyyy or mm-yyyy format
+def check_format(stringreq):
+    if len(stringreq) == 10:
+        return 3
+    elif len(stringreq) == 7:
+        return 2
     else:
-        return False
+        return 0
 
-# assigns a number to the month string
-def conv_month(m):
-    month_c = {
-        'january': 1,
-        'february': 2,
-        'march': 3,
-        'april': 4,
-        'may': 5,
-        'june': 6,
-        'july': 7,
-        'august': 8,
-        'september': 9,
-        'october': 10,
-        'november': 11,
-        'december': 12
-    }
-    if m in month_c:
-        return month_c[m]
-    else:
-        return None
+# takes the month value of the string (first two chars)
+def find_month(monthreq):
+    return monthreq[:2]
 
+# handles how the holidays are found for the requested month
+def handle_month(requestmonth,holidata):
+    correctmonth = find_month(requestmonth)
+    holidays = set() # used a set for no duplicate holidays
+    for holiday in holidata:
+        if holiday.split(',')[0].startswith(correctmonth):
+            holidays.add(holiday.split(',')[1].strip())
+    holidays = list(holidays)
+    return holidays
+
+# handles how the holidays are found for specific dates
+def handle_date(requestdate,holidata):
+    holidays = [holiday.split(',')[1].strip() for holiday in holidata if holiday.startswith(requestdate)]
+    return holidays
+    
+# main function
 def get_holidays(request):
-    # open the txt file
     holiday_file = 'holidays.txt'
     
     with open(holiday_file, 'r') as file:
         holidays_data = file.readlines()
     
-    # check if the request contains a date, and check if it is a valid month
-    checkd = check_if_date(request);
-    cmonth = check_month(request);
-    validmcheck = valid_month(cmonth);
-    if checkd and validmcheck:
-        # Handle date
-        cdate = check_date(request)
-        conv_m = conv_month(cmonth)
-        # add leading 0s for txt file
-        if len(cdate) == 1:
-            cdate_str = '0' + cdate
-        else:
-            cdate_str = cdate
-
-        if len(str(conv_m)) == 1:
-            conv_m_str = '0' + str(conv_m)
-        else:
-            conv_m_str = str(conv_m)
-
-        # check for what holidays match
-        holidays = [holiday.split(',')[1].strip() for holiday in holidays_data if holiday.startswith(f"{conv_m_str}-{cdate_str}")]
-    elif validmcheck:
-        # Handle month
-        conv_m = conv_month(cmonth)
-        # add leading zero if needed
-        if len(str(conv_m)) == 1:
-            conv_m_str = '0' + str(conv_m)
-        else:
-            conv_m_str = str(conv_m)
-
-        # check for what holidays match
-        holidays = [holiday.split(',')[1].strip() for holiday in holidays_data if holiday.split(',')[0].startswith(conv_m_str)]
+    format = check_format(request)
+    
+    if format != 0: # not invalid
+        if format == 3: # if date
+            holidays = handle_date(request,holidays_data)
+        else: # month
+            holidays = handle_month(request,holidays_data)
     else:
-        # not a valid month
         return "Invalid Input"
-
     
     return holidays
 

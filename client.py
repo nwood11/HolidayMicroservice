@@ -12,13 +12,15 @@ def send_request(request):
 if __name__ == "__main__":
     # some basic tests
     tests = [
-        "January",
-        "December 25",
-        "Decemmmber",
-        "Jany 20",
-        "",
-        "December",
-        "January 1"
+        "01-01-2024",   # January 1st, 2024 (New Years)
+        "12-25-2024",   # December 25th, 2024(Christmas)
+        "13-32-2024",   # Not a real date
+        "01-20-2023",   # January 20th, 2023 (not a holiday)
+        "",             # Empty string
+        "12-2024",      # Whole month of December
+        "01-2024",      # Whole month of January
+        "09-03-2018",   # September 3, 2018 (Labor ssDay)
+        "03-2024"       # Whole month of March
     ]
 
     for test in tests:
@@ -26,4 +28,3 @@ if __name__ == "__main__":
         response = send_request(test)
         print("Response:", response)
         print()
-
